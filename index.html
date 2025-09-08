@@ -14,7 +14,16 @@
   <video id="video"playsinline autoplay></video>
   <script>
     const url=location.search.match(/http.+/)[0];
-    const vid=document.getElementById('video');window.onclick=()=>vid.play();
+    const vid=document.getElementById('video');vid.play();
+    function openFullscreen(e){
+      if(e.requestFullscreen)e.requestFullscreen();
+      else if(e.mozRequestFullScreen)e.mozRequestFullScreen();
+      else if(e.webkitRequestFullscreen)e.webkitRequestFullscreen();
+      else if(e.msRequestFullscreen)e.msRequestFullscreen();
+    }
+    //window.onbeforeunload=function(){return true};
+    vid.play();
+    openFullscreen(video);document.addEventListener('click',function(){vid.play();openFullscreen(video)},true);
     if(vid.canPlayType('application/vnd.apple.mpegurl'))vid.src=url;
     else if(Hls.isSupported()){
       const hls=new Hls();
@@ -23,10 +32,10 @@
       hls.on(Hls.Events.ERROR,(e,d)=>console.error('HLS error',e,d));
     }else vid.innerHTML='HLS not supported in this browser.';
     window.addEventListener('message',e=>{
-      const d=e.d?.cmd;
-      if(d=='pause')vid.pause();
-      if(d=='play')vid.play();
-    }, false);
+      const d=e.d?.cmd;vid.play();
+      //if(d=='pause')vid.pause();
+      //if(d=='play')vid.play();
+    },!1);
   </script>
 </body>
 </html>
